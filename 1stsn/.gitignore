@@ -16,6 +16,7 @@ Thumbs.db
 
 # Wordpress
 wp-content/*
+wp-content/themes/skillsforlife
 !wp-content/themes
 
 # Environment

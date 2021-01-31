@@ -1,0 +1,49 @@
+version: '3'
+services:
+    wordpress:
+        image: visiblevc/wordpress
+
+        # required for mounting bindfs
+        cap_add:
+            - SYS_ADMIN
+        devices:
+            - /dev/fuse
+        # required on certain cloud hosts
+        security_opt:
+            - apparmor:unconfined
+
+        ports:
+            - 8080:80
+            - 443:443
+        volumes:
+            - ./data:/data
+            - ./scripts:/docker-entrypoint-initwp.d
+            - ./wp-content/themes/skillsforlife:/app/wp-content/themes/skillsforlife
+
+        environment:
+            DB_NAME: ${DB_NAME}
+            DB_PASS: ${DB_PASS}
+            PLUGINS: >-
+                kia-subtitle
+                quick-and-easy-faqs
+                svg-support
+                the-events-calendar
+                wp-store-locator
+                wired-impact-volunteer-management
+            URL_REPLACE: http://localhost:8080
+
+    db:
+        image: mariadb:10 # or mysql:5.7
+        volumes:
+            - data:/var/lib/mysql
+        environment:
+            MYSQL_ROOT_PASSWORD: ${DB_PASS}
+
+    phpmyadmin:
+        image: phpmyadmin/phpmyadmin
+        ports:
+            - 22222:80
+
+volumes:
+    data:
+
